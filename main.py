@@ -7,11 +7,17 @@ from digit_transistions import digit_integerStateTransistions, digit_realStateTr
 from identifier_transistions import ident_FirstStateTransistions, ident_StartTransistions, ident_ValidIdentifierStateTransistions
 
 keyword_list = ["int", "float", "bool", "if", "else", "then", "endif", "while", "whileend", "do", "doend", "for", "forend", "input", "output", "and", "or", "function"]
-operator_list = ["=", "+", "-", "*", "/", "%","<", ">", "<=", ">=", "==", "++", "--"]
+operator_list = ["=", "+", "-", "*", "/", "%","<", ">", "<=", ">=", "==", "++", "--", "!="]
 seperator_list = [";", ":", ",", "(", ")", "{", "}", "[", "]","'","."]
 
 #The split operators function deals with any cases such as "a+b-c" and splits it into "a + b - c" for the other functions to recieve correct format
-def splitOperators(inputLine):
+def insertSpace(inputLine):
+
+    #split keywords
+    for elm in keyword_list:
+        tempTuple = inputLine.partition(elm)
+        inputLine = " ".join(tempTuple)
+
     #Add whitespace char at end of string in case last element in a operator
     leftToParseString = inputLine + ' '     #String that has not yet parsed
     parsedString = ''                       #String that is already parsed
@@ -44,14 +50,12 @@ def splitOperators(inputLine):
     return parsedString
 
 def lexur(lexeme):
-
     #Check if keyword:
     if any(item == lexeme for item in keyword_list):
         return(lexeme, "KEYWORD")
 
     else:
         #split along list of operator/seperator and run function with the new list of strings
-        lexeme = splitOperators(lexeme)
         for splitLex in lexeme.split():
             #Check if operator:
             if any(item == splitLex for item in operator_list):
@@ -111,7 +115,13 @@ if __name__ == "__main__":
                 pass
             #Else run each lexeme through the lexur
             else:
-                for lexeme in line.split():
+                ##insert this
+                lexeme = insertSpace(line)
+                lexeme.strip()
+                multipleLex = lexeme.split()
+                print(multipleLex)
+
+                for lexeme in multipleLex:
                     tempList = lexur(lexeme)
                     print('{0:<15} {1:<10} {2:<30}'.format(tempList[1],"=",tempList[0]))
 
